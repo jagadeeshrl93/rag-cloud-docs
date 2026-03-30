@@ -1,0 +1,12 @@
+.env
+.venv/
+.chroma/
+data/
+__pycache__/
+*.pyc
+eval/results/
+*.egg-info/
+dist/
+.DS_Store
+.bm25_cache.pkl
+.python-version
