@@ -1,0 +1,114 @@
+[
+  {
+    "question": "How often should AWS access keys be rotated?",
+    "ground_truth": "AWS access keys should be rotated every 90 days as standard policy, immediately if a key is suspected compromised, and when an engineer leaves the team."
+  },
+  {
+    "question": "What are the steps to rotate AWS access keys?",
+    "ground_truth": "Log in to AWS Console, navigate to IAM, select the user, click Security credentials tab, create a new access key, download the key immediately, update all services with the new key, test everything works, deactivate the old key, monitor for 24 hours, then delete the old key."
+  },
+  {
+    "question": "What should you do if services break after key rotation?",
+    "ground_truth": "If services break after rotation, reactivate the old key immediately via IAM console and investigate which service was not updated before retrying."
+  },
+  {
+    "question": "How do I check if port 22 is open on an EC2 instance?",
+    "ground_truth": "Navigate to EC2, select the instance, check Security Groups inbound rules and verify port 22 is open for your IP."
+  },
+  {
+    "question": "What are the correct SSH commands for EC2 instances?",
+    "ground_truth": "For Amazon Linux use ec2-user@your-public-ip, for Ubuntu AMIs use ubuntu@your-public-ip, with the command ssh -i your-key.pem ec2-user@your-public-ip."
+  },
+  {
+    "question": "How do I fix high CPU usage on an EC2 instance?",
+    "ground_truth": "SSH into the instance, run top or htop to identify the process consuming CPU, check CloudWatch metrics for historical CPU trend, kill the runaway process with kill -9 PID, and if persistent consider upgrading the instance type."
+  },
+  {
+    "question": "How do I make an S3 bucket private after accidental public exposure?",
+    "ground_truth": "Go to S3 console, select the bucket, go to Permissions tab, enable all four Block Public Access settings, remove any public statements from the Bucket Policy, remove public grants from ACL, and enable S3 server access logging."
+  },
+  {
+    "question": "How do I sync files to an S3 bucket?",
+    "ground_truth": "Use the command aws s3 sync ./local-folder s3://your-bucket-name/prefix/ to sync files. Add --delete flag to remove files deleted locally, and --dryrun to preview changes."
+  },
+  {
+    "question": "How can I recover a deleted S3 object?",
+    "ground_truth": "Recovery is only possible if versioning is enabled. Go to S3, select the bucket, show versions, find the object with the delete marker, and delete the delete marker to restore the previous version."
+  },
+  {
+    "question": "Why can't I connect to my RDS instance?",
+    "ground_truth": "Check that the RDS security group allows inbound on port 5432 for PostgreSQL or 3306 for MySQL, verify the RDS is in the same VPC as the connecting EC2 instance, and confirm credentials are correct."
+  },
+  {
+    "question": "How do I troubleshoot slow queries on RDS?",
+    "ground_truth": "Enable Performance Insights in RDS console, identify top SQL queries by load, check for missing indexes using EXPLAIN ANALYZE, consider read replicas for read-heavy workloads, and review connection pooling using PgBouncer for PostgreSQL."
+  },
+  {
+    "question": "How do I check logs for a pod in CrashLoopBackOff?",
+    "ground_truth": "Use kubectl logs pod-name -n your-namespace to view logs, and kubectl logs pod-name -n your-namespace --previous to view logs from the previous crashed container."
+  },
+  {
+    "question": "What are common causes of CrashLoopBackOff?",
+    "ground_truth": "Common causes are application error on startup, missing environment variable or secret, insufficient memory due to resource limits, and failing liveness probe configuration."
+  },
+  {
+    "question": "How do I describe a pod to see its events?",
+    "ground_truth": "Use the command kubectl describe pod pod-name -n your-namespace to see events and details about the pod."
+  },
+  {
+    "question": "How do I check why a Kubernetes node is not ready?",
+    "ground_truth": "Use kubectl get nodes to check node status, kubectl describe node node-name to see details, and sudo journalctl -u kubelet -f to check kubelet logs on the node."
+  },
+  {
+    "question": "What is the kubelet timeout fix for slow networks?",
+    "ground_truth": "Set --kubelet-timeout=30s in the kubeadm config to extend the node registration window on slow networks."
+  },
+  {
+    "question": "How do I scale a Kubernetes deployment?",
+    "ground_truth": "Use kubectl scale deployment your-deployment --replicas=5 -n your-namespace to scale manually, kubectl rollout status to check progress, and kubectl rollout undo to rollback if something goes wrong."
+  },
+  {
+    "question": "How do I set up a CPU alarm in CloudWatch?",
+    "ground_truth": "Go to CloudWatch, create an alarm, select EC2 CPUUtilization metric, set threshold greater than 80 percent for 2 consecutive periods of 5 minutes, configure SNS notification action, create SNS topic, add email subscriber, and confirm subscription."
+  },
+  {
+    "question": "How do I query CloudWatch logs for errors?",
+    "ground_truth": "Use CloudWatch Insights with the query: fields @timestamp, @message | filter @message like /ERROR/ | sort @timestamp desc | limit 50"
+  },
+  {
+    "question": "How do I identify unused EC2 instances?",
+    "ground_truth": "Look for instances with CPU usage below 5 percent over 2 weeks in CloudWatch metrics."
+  },
+  {
+    "question": "How do I identify unused RDS instances?",
+    "ground_truth": "Check the DatabaseConnections metric in CloudWatch — zero connections over time means the RDS instance is unused."
+  },
+  {
+    "question": "How do I find unattached EBS volumes?",
+    "ground_truth": "Look for EBS volumes with state available — volumes in available state are not attached to any instance and can be deleted to save costs."
+  },
+  {
+    "question": "How do I right-size an EC2 instance?",
+    "ground_truth": "Install AWS Compute Optimizer, review recommendations in the console, stop the instance, go to Actions, Instance Settings, Change Instance Type, start the instance and verify application behaviour."
+  },
+  {
+    "question": "What is the best strategy for Reserved Instance planning?",
+    "ground_truth": "Analyse 3 months of On-Demand usage in Cost Explorer, purchase Reserved Instances for stable baseline workloads, and use Savings Plans for flexible compute across instance types."
+  },
+  {
+    "question": "How do I test an RDS connection from an EC2 instance?",
+    "ground_truth": "Use the command psql -h your-rds-endpoint -U your-username -d your-database from the EC2 instance to test the PostgreSQL connection."
+  },
+  {
+    "question": "What permissions are needed on a .pem key file before SSH?",
+    "ground_truth": "Run chmod 400 your-key.pem to set the correct permissions on the key file before attempting SSH."
+  },
+  {
+    "question": "How do I check the rollout status of a Kubernetes deployment?",
+    "ground_truth": "Use kubectl rollout status deployment/your-deployment -n your-namespace to check the rollout progress."
+  },
+  {
+    "question": "How do I count errors by time in CloudWatch Insights?",
+    "ground_truth": "Use the query: fields @timestamp, @message | filter @message like /ERROR/ | stats count() by bin(5m) to count errors grouped by 5 minute intervals."
+  }
+]

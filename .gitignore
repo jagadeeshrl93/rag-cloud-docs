@@ -9,4 +9,4 @@ eval/results/
 dist/
 .DS_Store
 .bm25_cache.pkl
-.python-version
+.python-version.env
