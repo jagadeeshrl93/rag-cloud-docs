@@ -9,7 +9,7 @@ from ragas import evaluate
 from ragas.metrics import Faithfulness, AnswerRelevancy, ContextRecall, ContextPrecision
 from openai import OpenAI as OpenAIClient
 from ragas.llms import llm_factory
-from ragas.embeddings import embedding_factory
+from ragas.embeddings import OpenAIEmbeddings as RagasOpenAIEmbeddings
 
 from src.retrieval.hybrid import hybrid_search
 from src.generation.llm import generate_answer
@@ -87,8 +87,9 @@ def run_evaluation(
     # Configure RAGAS to use OpenAI
     openai_client = OpenAIClient(api_key=settings.openai_api_key)
     llm = llm_factory("gpt-4o-mini", client=openai_client)
-    embeddings = embedding_factory(
-        "openai",
+    import os
+    os.environ["OPENAI_API_KEY"] = settings.openai_api_key
+    embeddings = RagasOpenAIEmbeddings(
         model="text-embedding-3-small",
         client=openai_client,
     )
@@ -122,8 +123,11 @@ def run_evaluation(
     }
 
     for metric, score in metrics.items():
-        bar = "█" * int(score * 20)
-        print(f"{metric:<25} {score:.3f}  {bar}")
+        if score != score:  # NaN check
+            print(f"{metric:<25} N/A (embedding error)")
+        else:
+            bar = "█" * int(score * 20)
+            print(f"{metric:<25} {score:.3f}  {bar}")
 
     print("="*50)
 

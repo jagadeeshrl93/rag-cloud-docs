@@ -50,12 +50,12 @@ This system is evaluated using [RAGAS](https://github.com/explodinggradients/rag
 
 ### Metrics
 
-| Metric            | What it measures                                                            | Score |
-| ----------------- | --------------------------------------------------------------------------- | ----- |
-| Faithfulness      | Does the answer stick to what the documents say, or does it make things up? | TBD   |
-| Answer relevancy  | Does the answer actually address the question asked?                        | TBD   |
-| Context recall    | Did retrieval find the right chunks for the question?                       | TBD   |
-| Context precision | Were the retrieved chunks actually useful, or was there noise?              | TBD   |
+| Metric            | What it measures                                                            | Score   |
+| ----------------- | --------------------------------------------------------------------------- | ------- |
+| Faithfulness      | Does the answer stick to what the documents say, or does it make things up? | 0.929   |
+| Answer relevancy  | Does the answer actually address the question asked?                        | pending |
+| Context recall    | Did retrieval find the right chunks for the question?                       | 1.000   |
+| Context precision | Were the retrieved chunks actually useful, or was there noise?              | 0.945   |
 
 _Scores are between 0 and 1. Above 0.8 is good. Above 0.9 is excellent._
 
