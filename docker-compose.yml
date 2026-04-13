@@ -1,0 +1,54 @@
+services:
+
+  # ── FastAPI backend ──────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file: .env
+    environment:
+      CHROMA_PERSIST_DIR: /app/.chroma
+    volumes:
+      # Persist the vector store across container restarts
+      - chroma_data:/app/.chroma
+      # Mount the data directory so documents survive rebuilds
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ── Streamlit frontend ───────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "8501:8501"
+    environment:
+      API_BASE_URL: http://api:8000
+    depends_on:
+      api:
+        condition: service_healthy
+
+  # ── Ollama (optional local LLM) ──────────────────────────────────────────────
+  # Uncomment this service if you want to run Ollama locally instead of OpenAI.
+  # After starting, pull the model once:
+  #   docker compose exec ollama ollama pull llama3.2
+  #
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   ports:
+  #     - "11434:11434"
+  #   volumes:
+  #     - ollama_data:/root/.ollama
+  #   environment:
+  #     OLLAMA_HOST: 0.0.0.0
+
+volumes:
+  chroma_data:
+  # ollama_data:
