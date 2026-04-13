@@ -90,12 +90,48 @@ making it easy to develop and demo without spending money.
 
 ## Getting started
 
-### Prerequisites
+### Option 1 — Docker (recommended)
 
-- Python 3.11
-- [Ollama](https://ollama.com) for free local inference
+The fastest way to run the full stack. No Python environment setup needed.
 
-### Setup
+**Prerequisites:** [Docker Desktop](https://docs.docker.com/desktop/)
+
+```bash
+git clone https://github.com/jagadeeshrl93/rag-cloud-docs
+cd rag-cloud-docs
+
+# Copy and fill in your environment variables
+cp .env.example .env        # add OPENAI_API_KEY if using GPT-4o-mini
+
+# Build and start both services
+docker compose up --build
+```
+
+| Service        | URL                          |
+| -------------- | ---------------------------- |
+| Streamlit UI   | http://localhost:8501        |
+| FastAPI + docs | http://localhost:8000/docs   |
+
+- ChromaDB data is persisted in a named Docker volume (`chroma_data`) — ingested documents survive container restarts.
+- Drop files into `data/` on the host; they are immediately visible inside the container.
+- To use a local LLM instead of OpenAI, uncomment the `ollama` service in `docker-compose.yml` and run:
+
+```bash
+docker compose exec ollama ollama pull llama3.2
+```
+
+To stop:
+
+```bash
+docker compose down          # keeps the chroma_data volume
+docker compose down -v       # also removes the volume (full reset)
+```
+
+---
+
+### Option 2 — Local Python
+
+**Prerequisites:** Python 3.11, [Ollama](https://ollama.com) for free local inference
 
 ```bash
 git clone https://github.com/jagadeeshrl93/rag-cloud-docs
@@ -104,31 +140,25 @@ cd rag-cloud-docs
 python -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
-pip install fastapi uvicorn pydantic pydantic-settings \
-            chromadb openai pymupdf beautifulsoup4 \
-            rank-bm25 sentence-transformers httpx python-dotenv
+pip install -r requirements.txt
 
-cp .env.example .env
+cp .env.example .env        # add OPENAI_API_KEY if using GPT-4o-mini
 ```
 
-### Add your documents
-
-Drop PDF, Markdown, or text files into the `data/` folder.
-
-### Start Ollama (free local LLM)
+Start Ollama (free local LLM):
 
 ```bash
 ollama serve            # terminal 1
 ollama pull llama3.2
 ```
 
-### Run the API
+Start the API:
 
 ```bash
 uvicorn src.api.main:app --reload    # terminal 2
 ```
 
-### Run the frontend
+Start the frontend:
 
 ```bash
 streamlit run frontend/app.py        # terminal 3
@@ -136,9 +166,13 @@ streamlit run frontend/app.py        # terminal 3
 
 Open http://localhost:8501 in your browser.
 
-### Ingest your documents
+---
 
-Click **Ingest documents** in the sidebar, then ask a question.
+### Add documents and ask questions
+
+1. Drop PDF, Markdown, or text files into the `data/` folder.
+2. Click **Ingest documents** in the sidebar.
+3. Ask a question.
 
 ---
 
@@ -169,6 +203,10 @@ Response includes `answer`, `sources`, `model`, and `chunks_used`.
 ## Project structure
 
 ```
+Dockerfile              two-stage build for FastAPI backend
+Dockerfile.frontend     two-stage build for Streamlit frontend
+docker-compose.yml      orchestrates both services
+requirements.txt        pinned Python dependencies
 src/
 ├── config.py           settings and environment variables
 ├── ingestion/
@@ -195,10 +233,10 @@ eval/
 
 ## What I'd build next
 
-- [ ] RAGAS evaluation scores — run eval harness and update table above
+- [x] Dockerfile + docker-compose deployment
 - [ ] Cross-encoder reranking on top of RRF results
 - [ ] Migrate vector store to pgvector on AWS RDS
-- [ ] Dockerfile + AWS deployment on EC2 free tier
+- [ ] AWS deployment on EC2 free tier
 - [ ] Conversation memory for multi-turn Q&A
 - [ ] Support for more document types (DOCX, Confluence, Notion)
 
