@@ -10,3 +10,7 @@ dist/
 .DS_Store
 .bm25_cache.pkl
 .python-version.env
+.chroma/
+data/
+.chroma/
+data/
