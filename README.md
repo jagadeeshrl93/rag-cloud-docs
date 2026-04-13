@@ -107,10 +107,10 @@ cp .env.example .env        # add OPENAI_API_KEY if using GPT-4o-mini
 docker compose up --build
 ```
 
-| Service        | URL                          |
-| -------------- | ---------------------------- |
-| Streamlit UI   | http://localhost:8501        |
-| FastAPI + docs | http://localhost:8000/docs   |
+| Service        | URL                        |
+| -------------- | -------------------------- |
+| Streamlit UI   | http://localhost:8501      |
+| FastAPI + docs | http://localhost:8000/docs |
 
 - ChromaDB data is persisted in a named Docker volume (`chroma_data`) — ingested documents survive container restarts.
 - Drop files into `data/` on the host; they are immediately visible inside the container.
@@ -233,12 +233,11 @@ eval/
 
 ## What I'd build next
 
-- [x] Dockerfile + docker-compose deployment
-- [ ] Cross-encoder reranking on top of RRF results
-- [ ] Migrate vector store to pgvector on AWS RDS
-- [ ] AWS deployment on EC2 free tier
-- [ ] Conversation memory for multi-turn Q&A
-- [ ] Support for more document types (DOCX, Confluence, Notion)
+- AWS deployment — live URL on EC2 free tier
+- CI/CD pipeline — GitHub Actions to auto-deploy on push
+- Cross-encoder reranking on top of RRF results
+- Migrate vector store to pgvector on AWS RDS
+- Conversation memory for multi-turn Q&A
 
 ---
 
